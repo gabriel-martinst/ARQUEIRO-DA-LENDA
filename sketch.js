@@ -5,8 +5,10 @@ const Constraint = Matter.Constraint;
 
 var engine, world;
 var canvas;
-var player, playerBase, playerArcher;
+var palyer, playerBase, playerArcher;
+var arrow;
 var baseimage;
+var playerimage;
 
 function preload() {
   backgroundImg = loadImage("./assets/background.png");
@@ -19,31 +21,51 @@ function setup() {
 
   engine = Engine.create();
   world = engine.world;
+
   angleMode(DEGREES);
 
-  //criar corpo da base do jogador
-  playerBase = Bodies.rectangle(200, 350, 180, 150, {isStatic: true});
+  var options = {
+    isStatic: true
+  };
+
+  playerBase = Bodies.rectangle(200, 350, 180, 150, options);
   World.add(world, playerBase);
 
-  //criar corpo do jogador
-  player = Bodies.rectangle(250, playerBase.position.y - 160, 50, 180, {isStatic: true});
-  World.add(world, player);
+  player = Bodies.rectangle(250, playerBase.position.y - 160, 50, 180, options);
+  World.add(world,player)
 
+  playerArcher = new PlayerArcher(
+    340,
+    playerBase.position.y - 112,
+    120,
+    120
+  );
 
+  arrow = new PlayerArrow(
+    playerArcher.body.position.x,
+    playerArcher.body.position.y,
+    100,
+    10
+  );
 }
 
 function draw() {
   background(backgroundImg);
-
-  //exibir a imagem do jogador usando a função image()
-  image(baseimage, playerBase.position.x, playerBase.position.y, 180, 150);
-
-  //exibir a imagem da base do jogador usando a função image()
-  image(playerimage, player.position.x, player.position.y, 50, 180);
-
+  image(baseimage,playerBase.position.x,playerBase.position.y,180,150)
+  image(playerimage,player.position.x,player.position.y,50,180)
   Engine.update(engine);
 
-  // Title
+  playerArcher.display();
+  arrow.display();
+
+  if (keyCode === 32) {
+    
+    arrow.shoot(playerArcher.angle);
+    // arrow.shoot(playerArcher.body.angle);
+  
+  }
+
+  // Título
   fill("#FFFF");
   textAlign("center");
   textSize(40);
